@@ -8,13 +8,10 @@ pipeline {
         echo 'This will check for a fast finish'
       }
     }
-    /*
     stage ('build') {
       paralell {
         stage('linux_python2.7') {
-          agent {
-            label "linux-anvil"
-          }
+          agent any
           environment {
             CONFIG='linux_python2.7'
           }
@@ -24,6 +21,5 @@ pipeline {
         }
       }
     }
-    */
   }
 }
