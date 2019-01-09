@@ -2,28 +2,24 @@
 pipeline {
   agent none
   stages {
-    stage('conda-forge') {
+    stage('fast-finish') {
       agent any
-      stages {
-        stage('fast-finish') {
-          steps {
-            echo 'try to fast-finish'
-          }
+      steps {
+        echo 'try to fast-finish'
+      }
+    }
+    stage('build') {
+      parallel {
+        stage('linux_python2.7') {
+          agent any
+            steps {
+              echo 'call conda-build here'
+            }
         }
-        stage('build') {
-          parallel {
-            stage('linux_python2.7') {
-              agent any
-              steps {
-                echo 'call conda-build here'
-              }
-            }
-            stage('linux_python3.6') {
-              agent any
-              steps {
-                echo 'call conda-build here'
-              }
-            }
+        stage('linux_python3.6') {
+          agent any
+          steps {
+            echo 'call conda-build here'
           }
         }
       }
