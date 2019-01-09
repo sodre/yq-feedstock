@@ -12,9 +12,6 @@ pipeline {
       paralell {
         stage('linux_python2.7') {
           agent any
-          environment {
-            CONFIG='linux_python2.7'
-          }
           steps {
             echo 'call conda-build here'
           }
