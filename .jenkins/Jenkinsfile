@@ -15,7 +15,7 @@ pipeline {
           environment {
             CONFIG='linux_python2.7'
           }
-          steps(){
+          steps {
             echo 'call conda-build here'
           }
         }
