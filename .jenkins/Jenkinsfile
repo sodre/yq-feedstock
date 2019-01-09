@@ -1,0 +1,26 @@
+#!/usr/bin/groovy 
+pipeline {
+  agent none
+  stages {
+    stage ('Fast finish') {
+      step {
+        echo 'This will check for a fast finish'
+      }
+    }
+    stage ('build') {
+      paralell {
+        stage('linux_python2.7') {
+          agent {
+            label "linux-anvil"
+          }
+          environment {
+            CONFIG='linux_python2.7'
+          }
+          steps(){
+            echo 'call conda-build here'
+          }
+        }
+      }
+    }
+  }
+}
