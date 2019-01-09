@@ -5,9 +5,7 @@ pipeline {
     stage ('Fast finish') {
       agent any
       steps {
-        step {
-          echo 'This will check for a fast finish'
-        }
+        echo 'This will check for a fast finish'
       }
     }
     /*
