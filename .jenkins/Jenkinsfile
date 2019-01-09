@@ -8,13 +8,11 @@ pipeline {
         echo 'This will check for a fast finish'
       }
     }
-    stage ('build') {
-      paralell {
-        stage('linux_python2.7') {
-          agent any
-          steps {
-            echo 'call conda-build here'
-          }
+    paralell {
+      stage('linux_python2.7') {
+        agent any
+        steps {
+          echo 'call conda-build here'
         }
       }
     }
