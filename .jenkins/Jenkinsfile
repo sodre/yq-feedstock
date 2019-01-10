@@ -1,6 +1,9 @@
 #!/usr/bin/groovy 
 pipeline {
   agent none
+  environment {
+    CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
+  }
   stages {
     stage('fast-finish') {
       agent any
@@ -12,9 +15,9 @@ pipeline {
       parallel {
         stage('linux_python2.7') {
           agent any
-            steps {
-              echo 'call conda-build here'
-            }
+          steps {
+            echo 'call conda-build here'
+          }
         }
         stage('linux_python3.6') {
           agent any
