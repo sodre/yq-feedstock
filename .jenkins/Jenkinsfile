@@ -2,30 +2,38 @@
 pipeline {
   agent none
   stages {
-    stage('fast-finish') {
-      agent any
-      steps {
-        echo 'try to fast-finish'
-      }
-    }
-    stage('build') {
+   stage('build') {
       parallel {
         stage('linux_python2.7') {
           agent any
           environment {
+            CONFIG='linux_python2.7'
             CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
           }
-          steps {
-            echo 'call conda-build here'
-          }
-        }
-        stage('linux_python3.6') {
-          agent any
-          environment {
-            CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
-          }
-          steps {
-            echo 'call conda-build here'
+          stages {
+            stage('install') {
+              steps {
+                echo ""
+                echo "Configuring conda."
+                sh """
+                   . ${CONDA_HOME}/bin/activate root
+
+                   conda install -n root -c conda-forge --quiet --yes conda-forge-ci-setup=2
+                   setup_conda_rc . ./recipe ./.ci_support/${CONFIG}.yaml
+
+                   . run_conda_forge_build_setup
+
+                   mangle_compiler . ./recipe ./.ci_support/${CONFIG}.yaml
+                   """
+ 
+              }
+            }
+            stage('script') {
+              steps {
+                echo ""
+                echo "conda build"
+              }
+            }
           }
         }
       }
