@@ -32,6 +32,7 @@ test:
   imports:
     - yq
   commands:
+    - find $PREFIX -type f
     - jq --help
     - yq --help
     - xq --help
