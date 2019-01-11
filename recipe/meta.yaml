@@ -32,6 +32,7 @@ test:
   imports:
     - yq
   commands:
+    - test $(which jq) = "$PREFIX/bin/jq"
     - yq --help
     - xq --help
     - test $(cat $RECIPE_DIR/meta.yaml | yq -r .package.name) = 'yq'
