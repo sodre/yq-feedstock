@@ -7,7 +7,7 @@ pipeline {
         stage('linux_python2.7') {
           agent any
           environment {
-            CONFIG='linux_python2.7'
+            CONFIG='${STAGE_NAME}'
             CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
           }
           steps {
