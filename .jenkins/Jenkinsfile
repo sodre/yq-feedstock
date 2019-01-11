@@ -24,7 +24,7 @@ pipeline {
                
                setup_conda_rc . ./recipe ./.ci_support/${CONFIG}.yaml
                source run_conda_forge_build_setup
-               export "CONDA_BLD_PATH=$PWD/build_artifacts"
+               export "CONDA_BLD_PATH=${WORKSPACE}/build_artifacts"
 
                mangle_compiler . ./recipe ./.ci_support/${CONFIG}.yaml
                make_build_number . ./recipe ./.ci_support/${CONFIG}.yaml
