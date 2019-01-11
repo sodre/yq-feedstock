@@ -10,40 +10,37 @@ pipeline {
             CONFIG='linux_python2.7'
             CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
           }
-          stages {
-            stage('install') {
-              steps {
-                echo ""
-                echo "Configuring conda."
-                sh """
-                   #!/usr/bin/bash
-                   . ${CONDA_HOME}/bin/activate root
+          steps {
+            echo "install conda-forge-ci-setup."
+            sh """#!/usr/bin/env bash
+               source ${CONDA_HOME}/etc/profile.d/conda.sh
+               conda activate base
 
-                   conda install -n root -c conda-forge --quiet --yes conda-forge-ci-setup=2
-                   setup_conda_rc . ./recipe ./.ci_support/${CONFIG}.yaml
+               conda install --quiet --yes conda-forge::conda-forge-ci-setup=2
+               """
+            sh """#/usr/bin/env bash
+               source ${CONDA_HOME}/etc/profile.d/conda.sh
+               conda activate base
+               
+               setup_conda_rc . ./recipe ./.ci_support/${CONFIG}.yaml
+               source run_conda_forge_build_setup
+               export "CONDA_BLD_PATH=$PWD/build_artifacts"
 
-                   . run_conda_forge_build_setup
+               mangle_compiler . ./recipe ./.ci_support/${CONFIG}.yaml
+               make_build_number . ./recipe ./.ci_support/${CONFIG}.yaml
+               """
 
-                   mangle_compiler . ./recipe ./.ci_support/${CONFIG}.yaml
-                   """
- 
-              }
-            }
-            stage('script') {
-              steps {
-                echo ""
-                echo "Building"
-                sh """
-                   #!/usr/bin/bash
-                   . ${CONDA_HOME}/bin/activate root
-                   make_build_number . ./recipe ./.ci_support/${CONFIG}.yaml
-                   conda build ./recipe -m ./.ci_support/${CONFIG}.yaml --clobber-file ./.ci_support/clobber_${CONFIG}.yaml
-                   """
-              }
-            }
+            sh """#/usr/bin/env bash
+               source ${CONDA_HOME}/etc/profile.d/conda.sh
+               conda activate base
+               env
+
+               conda build ./recipe -m ./.ci_support/${CONFIG}.yaml --clobber-file ./.ci_support/clobber_${CONFIG}.yaml
+               """
           }
         }
       }
     }
   }
 }
+
