@@ -32,8 +32,6 @@ test:
   imports:
     - yq
   commands:
-    - find $PREFIX -type f
-    - jq --help
     - yq --help
     - xq --help
     - test $(cat $RECIPE_DIR/meta.yaml | yq -r .package.name) = 'yq'
