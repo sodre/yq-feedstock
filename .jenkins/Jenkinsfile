@@ -11,7 +11,7 @@ pipeline {
             CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
           }
           steps {
-            build
+            conda_forge_build()
           }
         }
       }
@@ -19,7 +19,7 @@ pipeline {
   }
 }
 
-def build()
+def conda_forge_build()
 {
   echo "install conda-forge-ci-setup."
   sh """#!/usr/bin/env bash
