@@ -14,6 +14,16 @@ pipeline {
             conda_forge_build()
           }
         }
+        stage('linux_python3.6') {
+          agent any
+          environment {
+            CONFIG='${STAGE_NAME}'
+            CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
+          }
+          steps {
+            conda_forge_build()
+          }
+        }
       }
     }
   }
