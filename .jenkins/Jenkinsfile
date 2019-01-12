@@ -1,11 +1,14 @@
 #!/usr/bin/groovy 
+#!/usr/bin/groovy 
 pipeline {
   agent none
   stages {
    stage('build') {
       parallel {
         stage('linux_python2.7') {
-          agent any
+          agent {
+              label 'condaforge/linux-anvil-comp7'
+          }
           environment {
             CONFIG='${STAGE_NAME}'
             CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
@@ -15,7 +18,9 @@ pipeline {
           }
         }
         stage('linux_python3.6') {
-          agent any
+          agent {
+              label 'condaforge/linux-anvil-comp7'
+          }
           environment {
             CONFIG='${STAGE_NAME}'
             CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
@@ -32,14 +37,11 @@ pipeline {
 def conda_forge_build()
 {
   echo "install conda-forge-ci-setup."
-  sh """#!/usr/bin/env bash
-     source ${CONDA_HOME}/etc/profile.d/conda.sh
+  sh """#!/bin/bash -il
      conda activate base
-
      conda install --quiet --yes conda-forge::conda-forge-ci-setup=2
      """
-  sh """#/usr/bin/env bash
-     source ${CONDA_HOME}/etc/profile.d/conda.sh
+  sh """#!/bin/bash -il
      conda activate base
      
      setup_conda_rc . ./recipe ./.ci_support/${CONFIG}.yaml
@@ -51,8 +53,7 @@ def conda_forge_build()
      make_build_number . ./recipe ./.ci_support/${CONFIG}.yaml
      """
 
-  sh """#/usr/bin/env bash
-     source ${CONDA_HOME}/etc/profile.d/conda.sh
+  sh """#!/bin/bash -il
      conda activate base
      env
 
