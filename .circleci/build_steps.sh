@@ -22,13 +22,12 @@ conda clean --lock
 
 source run_conda_forge_build_setup
 
-conda config --set conda-build.root-dir ${FEEDSTOCK_ROOT}/build-artifacts
-
 # make the build number clobber
 make_build_number "${FEEDSTOCK_ROOT}" "${RECIPE_ROOT}" "${CONFIG_FILE}"
 
 conda build "${RECIPE_ROOT}" -m "${CI_SUPPORT}/${CONFIG}.yaml" \
-    --clobber-file "${CI_SUPPORT}/clobber_${CONFIG}.yaml"
+    --clobber-file "${CI_SUPPORT}/clobber_${CONFIG}.yaml" \
+    --croot ${FEEDSTOCK_ROOT}/build-artifacts
 
 
 upload_package "${FEEDSTOCK_ROOT}" "${RECIPE_ROOT}" "${CONFIG_FILE}"
