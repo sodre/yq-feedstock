@@ -12,13 +12,6 @@ export RECIPE_ROOT=${RECIPE_ROOT:-/home/conda/recipe_root}
 export CI_SUPPORT=${FEEDSTOCK_ROOT}/.ci_support
 export CONFIG_FILE="${CI_SUPPORT}/${CONFIG}.yaml"
 
-cat >~/.condarc <<CONDARC
-
-conda-build:
- root-dir: ${FEEDSTOCK_ROOT}/build_artifacts
-
-CONDARC
-
 conda install --yes --quiet conda-forge-ci-setup=2 conda-build -c conda-forge
 
 # set up the condarc
@@ -28,7 +21,8 @@ setup_conda_rc "${FEEDSTOCK_ROOT}" "${RECIPE_ROOT}" "${CONFIG_FILE}"
 conda clean --lock
 
 source run_conda_forge_build_setup
-unset CONDA_BLD_PATH
+
+conda config --set conda-build.root-dir ${FEEDSTOCK_ROOT}/build-artifacts
 
 # make the build number clobber
 make_build_number "${FEEDSTOCK_ROOT}" "${RECIPE_ROOT}" "${CONFIG_FILE}"
