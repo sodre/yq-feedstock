@@ -11,13 +11,15 @@ pipeline {
           environment {
             CONFIG="${STAGE_NAME}"
             FEEDSTOCK_ROOT="${WORKSPACE}"
-            RECIPE_ROOT="${WORKSPACE}/recipe"
+            RECIPE_ROOT="${FEEDSTOCK_ROOT}/recipe"
+            ARTIFACTS="${FEEDSTOCK_ROOT}/build_artifacts"
           }
           steps {
             sh """#!/bin/bash -il
                conda activate base
                .circleci/build_steps.sh
                """
+            fileExists '${ARTIFACTS}/conda-forge-build-done-${CONFIG}'
           }
         }
         stage('linux_python3.6') {
@@ -27,13 +29,15 @@ pipeline {
           environment {
             CONFIG="${STAGE_NAME}"
             FEEDSTOCK_ROOT="${WORKSPACE}"
-            RECIPE_ROOT="${WORKSPACE}/recipe"
+            RECIPE_ROOT="${FEEDSTOCK_ROOT}/recipe"
+            ARTIFACTS="${FEEDSTOCK_ROOT}/build_artifacts"
           }
           steps {
             sh """#!/bin/bash -il
                conda activate base
                .circleci/build_steps.sh
                """
+            fileExists '${ARTIFACTS}/conda-forge-build-done-${CONFIG}'
           }
         }
       }
