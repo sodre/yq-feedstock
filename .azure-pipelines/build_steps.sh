@@ -21,7 +21,7 @@ setup_conda_rc "${FEEDSTOCK_ROOT}" "${RECIPE_ROOT}" "${CONFIG_FILE}"
 conda clean --lock
 
 run_conda_forge_build_setup
-export CONDA_BLD_PATH=${FEEDSTOCK_ROOT}/build-artifacts
+export CONDA_BLD_PATH=${FEEDSTOCK_ROOT}/build_artifacts
 
 # make the build number clobber
 make_build_number "${FEEDSTOCK_ROOT}" "${RECIPE_ROOT}" "${CONFIG_FILE}"
