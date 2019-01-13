@@ -1,61 +1,42 @@
-#!/usr/bin/groovy 
+#!/usr/bin/groovy
 pipeline {
   agent none
   stages {
    stage('build') {
       parallel {
         stage('linux_python2.7') {
-          agent any
+          agent {
+            label 'condaforge/linux-anvil'
+          }
           environment {
-            CONFIG='${STAGE_NAME}'
-            CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
+            CONFIG="${STAGE_NAME}"
+            FEEDSTOCK_ROOT="${WORKSPACE}"
+            RECIPE_ROOT="${WORKSPACE}/recipe"
           }
           steps {
-            conda_forge_build()
+            sh """#!/bin/bash -il
+               conda activate base
+               .circleci/build_steps.sh
+               """
           }
         }
         stage('linux_python3.6') {
-          agent any
+          agent {
+            label 'condaforge/linux-anvil'
+          }
           environment {
-            CONFIG='${STAGE_NAME}'
-            CONDA_HOME=tool name: 'miniconda3', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
+            CONFIG="${STAGE_NAME}"
+            FEEDSTOCK_ROOT="${WORKSPACE}"
+            RECIPE_ROOT="${WORKSPACE}/recipe"
           }
           steps {
-            conda_forge_build()
+            sh """#!/bin/bash -il
+               conda activate base
+               .circleci/build_steps.sh
+               """
           }
         }
       }
     }
   }
-}
-
-def conda_forge_build()
-{
-  echo "install conda-forge-ci-setup."
-  sh """#!/usr/bin/env bash
-     source ${CONDA_HOME}/etc/profile.d/conda.sh
-     conda activate base
-
-     conda install --quiet --yes conda-forge::conda-forge-ci-setup=2
-     """
-  sh """#/usr/bin/env bash
-     source ${CONDA_HOME}/etc/profile.d/conda.sh
-     conda activate base
-     
-     setup_conda_rc . ./recipe ./.ci_support/${CONFIG}.yaml
-     conda config --set always_copy True
-     source run_conda_forge_build_setup
-     export "CONDA_BLD_PATH=${WORKSPACE}/build_artifacts"
-
-     mangle_compiler . ./recipe ./.ci_support/${CONFIG}.yaml
-     make_build_number . ./recipe ./.ci_support/${CONFIG}.yaml
-     """
-
-  sh """#/usr/bin/env bash
-     source ${CONDA_HOME}/etc/profile.d/conda.sh
-     conda activate base
-     env
-
-     conda build ./recipe -m ./.ci_support/${CONFIG}.yaml --clobber-file ./.ci_support/clobber_${CONFIG}.yaml
-     """
 }
